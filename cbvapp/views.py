@@ -3,6 +3,8 @@ from .models import Books
 from .serializers import SerializerBooks
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.http import Http404
+from rest_framework  import status
 
 
 class Books_list_View(APIView):
@@ -21,6 +23,28 @@ class Books_list_View(APIView):
         return Response(serializer.errors)
 
 
+class Books_details_view(APIView):
+    
+    def get_book(self, pk):
+        try:
+            return Books.objects.get(pk=pk)
+        except Books.DoesNotExist:
+            raise Http404
 
+    def get(self, request, pk):
+        book = self.get_book(pk)
+        serializer = SerializerBooks(book)
+        return Response(serializer.data)
+    
+    def delete(self, request, pk):
+        book = self.get_book(pk)
+        book.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-
+    def put(self, request, pk):
+        book = self.get_book(pk)
+        serializer = SerializerBooks(book, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_304_NOT_MODIFIED)
