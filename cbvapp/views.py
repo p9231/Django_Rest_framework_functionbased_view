@@ -17,8 +17,18 @@ class Books_list_View(mixins.ListModelMixin,mixins.CreateModelMixin, generics.Ge
     def post(self, request):
         return self.create(request)
     
-class Books_details_view(mixins.RetrieveModelMixin, generics.GenericAPIView):
-    pass
+class Books_details_view(mixins.RetrieveModelMixin,mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Books.objects.all()
+    serializer_class = SerializerBooks
+    
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+    
+    def put(self, request, pk):
+        return self.update(request, pk)
+    
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
 
 """
 class Books_list_View(APIView):
