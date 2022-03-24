@@ -8,7 +8,23 @@ from rest_framework  import status
 from rest_framework import mixins, generics
 
 
-class Books_list_View(mixins.ListModelMixin,mixins.CreateModelMixin, generics.GenericAPIView):
+
+class Books_list_View(generics.ListCreateAPIView):
+    queryset = Books.objects.all()
+    serializer_class = SerializerBooks
+    
+
+class Books_details_view(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Books.objects.all()
+    serializer_class = SerializerBooks
+
+
+
+"""
+class Books_list_View(mixins.ListModelMixin,
+                      mixins.CreateModelMixin,
+                      generics.GenericAPIView):
+    
     queryset = Books.objects.all()
     serializer_class = SerializerBooks
     def get(self, request):
@@ -17,7 +33,11 @@ class Books_list_View(mixins.ListModelMixin,mixins.CreateModelMixin, generics.Ge
     def post(self, request):
         return self.create(request)
     
-class Books_details_view(mixins.RetrieveModelMixin,mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+class Books_details_view(mixins.RetrieveModelMixin,
+                         mixins.UpdateModelMixin,
+                         mixins.DestroyModelMixin,
+                         generics.GenericAPIView):
+    
     queryset = Books.objects.all()
     serializer_class = SerializerBooks
     
@@ -29,6 +49,8 @@ class Books_details_view(mixins.RetrieveModelMixin,mixins.UpdateModelMixin, mixi
     
     def delete(self, request, pk):
         return self.destroy(request, pk)
+
+"""
 
 """
 class Books_list_View(APIView):
