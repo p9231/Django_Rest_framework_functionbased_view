@@ -6,9 +6,61 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework  import status
 from rest_framework import mixins, generics
+from rest_framework.viewsets import ViewSet
+
+
+class BooksViewsets(ViewSet):
+    
+    def get(self, request):
+        books = Books.objects.all()
+        serializer = SerializerBooks(books, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = SerializerBooks(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    
+    
+    def update(self, request, pk):
+        books = Books.objects.get(pk=pk)
+        serializer = SerializerBooks(books, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+    
+    def retrieve(self, request, pk):
+        try:
+            books = Books.objects.get(pk=pk)
+        except Books.DoesNotExist:
+            raise Http404
+        serializer = SerializerBooks(books)
+        return Response(serializer.data)
+    
+    def delete(self, request, pk):
+        try:
+            books = Books.objects.get(pk=pk)
+        except Books.DoesNotExist:
+            raise Http404
+        
+        books.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+    
 
 
 
+
+
+
+
+
+
+"""
 class Books_list_View(generics.ListCreateAPIView):
     queryset = Books.objects.all()
     serializer_class = SerializerBooks
@@ -18,7 +70,7 @@ class Books_details_view(generics.RetrieveUpdateDestroyAPIView):
     queryset = Books.objects.all()
     serializer_class = SerializerBooks
 
-
+"""
 
 """
 class Books_list_View(mixins.ListModelMixin,

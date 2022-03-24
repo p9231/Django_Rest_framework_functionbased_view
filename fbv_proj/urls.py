@@ -15,10 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from cbvapp.views import BooksViewsets
+
+
+router = DefaultRouter()
+router.register('test', BooksViewsets, basename='book')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('fbvapp.urls')),
-    path('books/', include('cbvapp.urls'))
+    # path('books/', include('cbvapp.urls'))
+    path('books/', include(router.urls))
 ]
